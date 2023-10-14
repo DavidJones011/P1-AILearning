@@ -24,24 +24,24 @@ namespace AILearning
                 blackboard.RegisterBlackboardEntry(BB_NAME_NUMBER, EntryType.INT);
                 blackboard.RegisterBlackboardEntry(BB_NAME_MOVELOC, EntryType.VECTOR);
 
-                int value = -1;
-                blackboard.GetIntValue(BB_NAME_NUMBER, ref value);
-                blackboard.SetVectorValue(BB_NAME_MOVELOC, target ? target.transform.position : Vector3.zero);
+                //int value = -1;
+                //blackboard.GetIntValue(BB_NAME_NUMBER, ref value);
                 //print(value);
+                blackboard.SetVectorValue(BB_NAME_MOVELOC, target ? target.transform.position : Vector3.zero);
             }
         }
 
         // Update is called once per frame
         void Update()
         {
+            blackboard.SetVectorValue(BB_NAME_MOVELOC, target ? target.transform.position : Vector3.zero);
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                int value = -1;
-                blackboard.SetIntValue(BB_NAME_NUMBER, 20);
+                //int value = -1;
+                //blackboard.SetIntValue(BB_NAME_NUMBER, 20);
                 //blackboard.GetIntValue(BB_NAME_NUMBER, ref value);
-                //print(value)
-
-                blackboard.SetVectorValue(BB_NAME_MOVELOC, target ? target.transform.position : Vector3.zero);
+                //print(value);          
             }
         }
     }

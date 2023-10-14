@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Action_MoveTo
   m_EditorClassIdentifier: 
   _speed: 5
-  _desiredGoalDistance: 0.2
+  _desiredGoalDistance: 0.01
   _blackboardKeyName: MoveLocation

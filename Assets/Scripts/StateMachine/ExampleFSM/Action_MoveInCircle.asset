@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b655a799eaa13544e8c73c99288c1daf, type: 3}
   m_Name: Action_MoveInCircle
   m_EditorClassIdentifier: 
-  duration: 5
-  speed: 5
-  radius: 1.5
+  _duration: 10
+  _speed: 5
+  _radius: 1.5

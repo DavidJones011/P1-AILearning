@@ -8,7 +8,7 @@ namespace AILearning
     [CreateAssetMenu(fileName = "Action_MoveInCircle", menuName = "AI/StateMachine/Action/Action_MoveInCircle", order = 1)]
     public class Action_MoveInCircle : Action
     {
-        [SerializeField]
+        [SerializeField, Tooltip("Duration of spinning in a circle.")]
         float _duration = 5.0f;
 
         [SerializeField]

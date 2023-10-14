@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e251c40e47c259647a8189524336caec, type: 3}
-  m_Name: State_MoveToLooping
+  m_Script: {fileID: 11500000, guid: cefca5c8f6e040f4ba5da317e7fa0ba9, type: 3}
+  m_Name: Condition_BBInt
   m_EditorClassIdentifier: 
-  actions:
-  - {fileID: 11400000, guid: f6a1f4224f2dedf45b63c6f3f11ded76, type: 2}
-  transitions: []
+  _type: 4
+  _key: 
+  _epsilon: 0.01
+  _value: 0
