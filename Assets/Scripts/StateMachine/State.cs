@@ -1,19 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace AILearning
 {
+    [Flags]
     public enum EStateResult
     {
-        RUNNING,
-        SUCCESS,
-        FAILED
+        RUNNING = 1,
+        SUCCESS = 2,
+        FAILED  = 4
     }
 
     // A state holds transitions and actions.
     // -- To define a behavior for AI you can have multiple actions that can be run concurrently.
     // -- (e.g. moving and shooting at the same time)
+    // -- since states are scriptable objects, DO NOT store data on the state that would change over time (unless you want sideffects)
     [CreateAssetMenu(fileName = "State", menuName = "AI/StateMachine/State", order = 1)]
     public class State : ScriptableObject
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,10 +15,7 @@ namespace AILearning
         List<Condition> _conditions = new List<Condition>();
 
         [SerializeField]
-        bool _transitionWithNoConditions = true;
-
-        [SerializeField]
-        bool _requireSuccessFromState = false;
+        EStateResult _canTransitionFlags;
 
         [SerializeField]
         State _target = null;
@@ -29,11 +27,10 @@ namespace AILearning
             if (_target == null)
                 return false;
 
-            if (_conditions.Count == 0)
-                return _transitionWithNoConditions;
+            int flag = (int)((1 << (int)result));
 
-            if (_requireSuccessFromState && result != EStateResult.SUCCESS)
-                return false;
+            if(!_canTransitionFlags.HasFlag(result))
+                return false;             
 
             foreach (Condition c in _conditions)
             {

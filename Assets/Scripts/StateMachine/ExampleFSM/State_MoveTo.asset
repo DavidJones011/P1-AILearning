@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c38c4a4002c107c40bc2f0ca71a851d9, type: 3}
-  m_Name: Transition_AutoSuccess
+  m_Script: {fileID: 11500000, guid: e251c40e47c259647a8189524336caec, type: 3}
+  m_Name: State_MoveTo
   m_EditorClassIdentifier: 
-  _conditions: []
-  _transitionWithNoConditions: 1
-  _requireSuccessFromState: 1
-  _target: {fileID: 11400000, guid: 0fb35afeb7c938a4f84a5908880b670a, type: 2}
+  actions:
+  - {fileID: 11400000, guid: f6a1f4224f2dedf45b63c6f3f11ded76, type: 2}
+  transitions:
+  - {fileID: 11400000, guid: 5f39ceac9a576354287839d1dab68277, type: 2}

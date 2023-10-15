@@ -18,21 +18,20 @@ namespace AILearning
         [SerializeField]
         string _blackboardKeyName = "MoveLocation";
 
-        Vector3 _targetLocation = Vector3.zero;
-
         public override EActionResult ExecuteAction(AIBrain brain)
         {
-            if(!brain.GetBlackboard().GetVectorValue(_blackboardKeyName, ref _targetLocation)) // failed to find bb key
+            Vector3 targetLocation = Vector3.zero;
+            if(!brain.GetBlackboard().GetVectorValue(_blackboardKeyName, ref targetLocation)) // failed to find bb key
                 return EActionResult.FAILURE;
 
             Vector3 location = brain.gameObject.transform.position;
-            if(Vector3.SqrMagnitude(location - _targetLocation) <= (_desiredGoalDistance * _desiredGoalDistance))
+            if(Vector3.SqrMagnitude(location - targetLocation) <= (_desiredGoalDistance * _desiredGoalDistance))
             {
                 // already at the goal
                 return EActionResult.SUCCESS;
             }
 
-            if(!brain.GetComponent<NavMeshAgent>().SetDestination(_targetLocation)) // couldn't find path
+            if(!brain.GetComponent<NavMeshAgent>().SetDestination(targetLocation)) // couldn't find path
                 return EActionResult.FAILURE;
 
             return EActionResult.RUNNING;
@@ -45,9 +44,16 @@ namespace AILearning
 
         public override EActionResult TickAction(float deltaTime, AIBrain brain)
         {
+            Vector3 targetLocation = Vector3.zero;
+            brain.GetBlackboard().GetVectorValue(_blackboardKeyName, ref targetLocation);
+
+            // TODO: Make an observer so that we don't recalc path every frame
+            brain.gameObject.GetComponent<NavMeshAgent>().SetDestination(targetLocation);
+
             // success when we are close enough
             Vector3 location = brain.gameObject.transform.position;
-            if (Vector3.SqrMagnitude(location - _targetLocation) <= (_desiredGoalDistance * _desiredGoalDistance))
+            float distSquared = Vector3.SqrMagnitude(location - targetLocation);
+            if (distSquared <= (_desiredGoalDistance * _desiredGoalDistance))
             {
                 // already at the goal
                 return EActionResult.SUCCESS;

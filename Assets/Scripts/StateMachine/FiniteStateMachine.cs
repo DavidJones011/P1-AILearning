@@ -74,23 +74,15 @@ namespace AILearning
             if (currentState && res == EStateResult.RUNNING)
             {
                 res = currentState.TickState(deltaTime, brain);
-
-                // if the state hasn't failed, check if we can transition
-                if(res != EStateResult.FAILED)
-                {
-                    State newtarget = null;
-                    if (currentState.CanTransition(brain, res, out newtarget))
-                    {
-                        targetState = newtarget;
-                    }
-                }
             }
 
-            // if the state is no longer running, we want to exit the state
-            if(currentState && res != EStateResult.RUNNING)
+            // if we can transition then we exit the state
+            State newtarget = null;
+            if (currentState && currentState.CanTransition(brain, res, out newtarget))
             {
                 currentState.ExitState(brain, res == EStateResult.SUCCESS);
                 currentState = null;
+                targetState = newtarget;
             }
         }
     }

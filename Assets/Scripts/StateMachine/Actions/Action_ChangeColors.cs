@@ -16,33 +16,37 @@ namespace AILearning
         [SerializeField]
         float _frequency = 5.0f;
 
-        float _timer = 0.0f;
-        Color _origColor = Color.white;
-
         public override EActionResult ExecuteAction(AIBrain brain)
         {
             MeshRenderer renderer = brain.gameObject.GetComponent<MeshRenderer>();
             if (renderer == null)
                 return EActionResult.FAILURE;
 
-            _timer = 0.0f;
-            _origColor = renderer.material.color;
+            brain.GetBlackboard().SetFloatValue("ColorTimer", 0.0f);
             return EActionResult.RUNNING;
         }
 
         public override void ExitAction(AIBrain brain, bool success)
         {
+            Color otherColor = Color.white;
+            brain.GetBlackboard().GetColorValue("Color", ref otherColor);
             MeshRenderer renderer = brain.gameObject.GetComponent<MeshRenderer>();
-            renderer.material.color = _origColor;
+            renderer.material.color = otherColor;
         }
 
         public override EActionResult TickAction(float deltaTime, AIBrain brain)
         {
-            _timer += deltaTime * _frequency;
-            float t = 1.0f - (Mathf.Cos(_timer) * 0.5f + 0.5f);
+            float timer = 0.0f;
+            brain.GetBlackboard().GetFloatValue("ColorTimer", ref timer);
+            timer += deltaTime * _frequency;
+            brain.GetBlackboard().SetFloatValue("ColorTimer", timer);
 
+            float t = 1.0f - (Mathf.Cos(timer) * 0.5f + 0.5f);
+
+            Color otherColor = Color.white;
+            brain.GetBlackboard().GetColorValue("Color", ref otherColor);
             MeshRenderer renderer = brain.gameObject.GetComponent<MeshRenderer>();
-            renderer.material.color = Color.Lerp(_origColor, _color, t);
+            renderer.material.color = Color.Lerp(otherColor, _color, t);
 
             return EActionResult.RUNNING;
         }

@@ -14,9 +14,12 @@ namespace AILearning
     {
         INT,
         FLOAT,
+        BOOL,
         VECTOR,
+        COLOR,
     }
 
+    // Class used to hold static function for creating blackboard entries
     public class BlackboardEntryFactory
     {
         public static BlackboardEntry Create(EntryType entryType)
@@ -27,13 +30,19 @@ namespace AILearning
             switch(entryType)
             {
                 case EntryType.INT:
-                    entry._value._i_value = 0;
+                    entry._value._integer = 0;
                     break;
                 case EntryType.FLOAT:
-                    entry._value._f_value = 0.0f;
+                    entry._value._float = 0.0f;
                     break;
                 case EntryType.VECTOR:
-                    entry._value._v_value = Vector3.zero;
+                    entry._value._vector3 = Vector3.zero;
+                    break;
+                case EntryType.BOOL:
+                    entry._value._bool = false;
+                    break;
+                case EntryType.COLOR:
+                    entry._value._color = Color.white;
                     break;
                 default:
                     throw new NotImplementedException("Invalid entry type. Wasn't implemented");
@@ -43,14 +52,18 @@ namespace AILearning
         }
     }
 
+    // Structure that holds data for a blackboard entry
+    // -- Blackboard entries can vary
     public struct BlackboardEntry
     {
         [StructLayout(LayoutKind.Explicit)]
         public struct BBEntryUnion
         {
-            [FieldOffset(0)] public int _i_value;
-            [FieldOffset(0)] public float _f_value;
-            [FieldOffset(0)] public Vector3 _v_value;
+            [FieldOffset(0)] public int _integer;
+            [FieldOffset(0)] public float _float;
+            [FieldOffset(0)] public Vector3 _vector3;
+            [FieldOffset(0)] public Color _color;
+            [FieldOffset(0)] public bool _bool;
         };
 
         internal EntryType _entryType;
@@ -63,15 +76,75 @@ namespace AILearning
     {
         Dictionary<string, BlackboardEntry> entries = new Dictionary<string, BlackboardEntry>();
 
+        // creates and registers a blackboard entry with associated name
         public void RegisterBlackboardEntry(string name, EntryType type)
         {
             BlackboardEntry entry = BlackboardEntryFactory.Create(type);
             entries.Add(name, entry);
         }
 
+        // creates and unregisters a blackboard entry with associated name
         public void UnregisterBlackboardEntry(string name)
         {
             entries.Remove(name);
+        }
+
+        public void SetBoolValue(string key, bool value)
+        {
+            if (!entries.ContainsKey(key))
+                return;
+
+            BlackboardEntry entry = entries[key]; // how do i get a reference here?
+
+            if (entry._entryType != EntryType.BOOL)
+                return;
+
+            entry._value._bool = value;
+            entries[key] = entry;
+        }
+
+        public bool GetBoolValue(string key, ref bool value)
+        {
+            BlackboardEntry entry;
+            bool found = entries.TryGetValue(key, out entry);
+
+            if (!found)
+                return false;
+
+            if (entry._entryType != EntryType.BOOL)
+                return false;
+
+            value = entry._value._bool;
+            return true;
+        }
+
+        public void SetColorValue(string key, Color value)
+        {
+            if (!entries.ContainsKey(key))
+                return;
+
+            BlackboardEntry entry = entries[key];
+
+            if (entry._entryType != EntryType.COLOR)
+                return;
+
+            entry._value._color = value;
+            entries[key] = entry;
+        }
+
+        public bool GetColorValue(string key, ref Color value)
+        {
+            BlackboardEntry entry;
+            bool found = entries.TryGetValue(key, out entry);
+
+            if (!found)
+                return false;
+
+            if (entry._entryType != EntryType.COLOR)
+                return false;
+
+            value = entry._value._color;
+            return true;
         }
 
         public void SetVectorValue(string key, Vector3 value)
@@ -84,7 +157,7 @@ namespace AILearning
             if (entry._entryType != EntryType.VECTOR)
                 return;
 
-            entry._value._v_value = value;
+            entry._value._vector3 = value;
             entries[key] = entry;
         }
 
@@ -99,7 +172,7 @@ namespace AILearning
             if (entry._entryType != EntryType.VECTOR)
                 return false;
 
-            value = entry._value._v_value;
+            value = entry._value._vector3;
             return true;
         }
 
@@ -113,7 +186,7 @@ namespace AILearning
             if (entry._entryType != EntryType.INT)
                 return;
 
-            entry._value._i_value = value;
+            entry._value._integer = value;
             entries[key] = entry;
         }
 
@@ -128,7 +201,7 @@ namespace AILearning
             if (entry._entryType != EntryType.INT)
                 return false;
 
-            value = entry._value._i_value;
+            value = entry._value._integer;
             return true;
         }
 
@@ -142,11 +215,11 @@ namespace AILearning
             if (entry._entryType != EntryType.FLOAT)
                 return;
 
-            entry._value._f_value = value;
+            entry._value._float = value;
             entries[key] = entry;
         }
 
-        public bool GetFloatValue(string key, float value)
+        public bool GetFloatValue(string key, ref float value)
         {
             BlackboardEntry entry;
             bool found = entries.TryGetValue(key, out entry);
@@ -157,72 +230,8 @@ namespace AILearning
             if (entry._entryType != EntryType.FLOAT)
                 return false;
 
-            value = entry._value._f_value;
+            value = entry._value._float;
             return true;
         }
-
-        /*private T FromByteArray<T>(byte[] data)
-        {
-            if (data == null)
-                return default(T);
-            BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream(data.Length);
-            ms.Read(data, 0, data.Length);
-            return (T)ms.ReadByte();
-        }*/
-
-        /*public byte[] ToByteArray<T>(T obj)
-        {
-            if (obj == null)
-                return null;
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
-            {
-                bf.Serialize(ms, obj);
-                return ms.ToArray();
-            }
-        }*/
-
-        /*private bool GetEntry(string key, EntryType type, ref byte[] data)
-        {
-            BlackboardEntry entry;
-            bool found = entries.TryGetValue(key, out entry);
-
-            if (!found)
-                return false;
-
-            if (entry._entryType != type)
-                return false;
-
-            data = entry.data;
-            return true;
-        }*/
-
-        /*private void SetEntry<T>(string key, EntryType type, T value)
-        {
-            BlackboardEntry entry;
-            bool found = entries.TryGetValue(key, out entry);
-
-            if (!found)
-                return;
-
-            if (entry._entryType != type)
-                return;
-
-            switch(type)
-            {
-                case EntryType.FLOAT:
-                    entry._value._f_value = value;
-                    break;
-                case EntryType.INT:
-                    break;
-                case EntryType.VECTOR:
-                    break;
-                default:
-                    return;
-            }
-
-            entry.data = data;
-        }*/
     }
 }
