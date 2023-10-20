@@ -38,9 +38,9 @@ public class SightSource : MonoBehaviour, SightSourceInterface
             RaycastHit result;
             Vector3 direction = (gameObject.transform.position - observerPosition);
             float distance = direction.magnitude;
-            bool hit = Physics.Raycast(observerPosition, direction, out result, distance);
+            bool hit = Physics.Raycast(observerPosition, direction.normalized, out result, distance);
 
-            if (hit && result.collider.gameObject != gameObject)
+            if (hit && result.collider.GetComponent<Collider>().gameObject != gameObject)
             {
                 return false;
             }

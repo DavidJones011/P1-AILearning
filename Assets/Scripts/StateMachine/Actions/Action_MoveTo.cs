@@ -10,9 +10,6 @@ namespace AILearning
     public class Action_MoveTo : Action
     {
         [SerializeField]
-        float _speed = 5.0f;
-
-        [SerializeField]
         float _desiredGoalDistance = 0.2f;
 
         [SerializeField]
